@@ -11,6 +11,12 @@ cache:
 build:
   stage: build
   tags: [portfolio-shell]
+  before_script:
+    # Set NVM_DIR and source nvm
+    - export NVM_DIR="$HOME/.nvm"
+    - '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
+    - nvm use --lts
+    - npm -v
   script:
     - echo "Installing deps..."
     - npm ci
