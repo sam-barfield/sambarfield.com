@@ -37,7 +37,6 @@ deploy:
     - echo "Deploying portfolio (static files)..."
     # files that no longer exist in dist
     - sudo -n rsync -a --delete dist/ /var/www/html/
-    - sudo systemctl reload nginx
   environment:
     name: production
     url: https://sambarfield.com
