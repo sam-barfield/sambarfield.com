@@ -1,0 +1,39 @@
+stages: [build, deploy]
+
+variables:
+  NODE_ENV: production
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+
+build:
+  stage: build
+  tags: [portfolio-shell]
+  script:
+    - echo "Installing deps..."
+    - npm ci
+    - echo "Building Vite app..."
+    - npm run build            # produces ./dist
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 week
+  only:
+    - main
+
+deploy:
+  stage: deploy
+  tags: [portfolio-shell]
+  dependencies: [build]
+  script:
+    - echo "Deploying portfolio (static files)..."
+    # files that no longer exist in dist
+    - sudo rsync -a --delete dist/ /var/www/html/
+    - sudo systemctl reload nginx
+  environment:
+    name: production
+    url: https://sambarfield.com
+  only:
+    - main
